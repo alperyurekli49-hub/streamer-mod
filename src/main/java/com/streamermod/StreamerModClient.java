@@ -16,7 +16,7 @@ public class StreamerModClient implements ClientModInitializer {
                 "key.streamermod.open_menu",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_RIGHT_SHIFT,
-                KeyBinding.Category.MISC
+                "category.streamermod.general"
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
