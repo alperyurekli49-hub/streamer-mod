@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "streamermod",
+  "version": "${version}",
+  "name": "Streamer Mod",
+  "description": "A custom utility menu for creators on Minecraft servers.",
+  "authors": ["Streamer Mod Team"],
+  "contact": {
+    "sources": "https://github.com/alperyurekli49-hub/streamer-mod"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.streamermod.StreamerModClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
