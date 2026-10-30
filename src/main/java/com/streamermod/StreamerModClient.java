@@ -17,7 +17,7 @@ public class StreamerModClient implements ClientModInitializer {
         openMenuKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.streamermod.open_menu",
                 InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_I,
+                GLFW.GLFW_KEY_RIGHT_SHIFT,
                 "category.streamermod.general"
         ));
 
