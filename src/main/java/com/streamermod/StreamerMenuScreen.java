@@ -17,8 +17,8 @@ public class StreamerMenuScreen extends Screen {
         int left = (this.width - PANEL_WIDTH) / 2;
         int top = this.height / 2 - 68;
 
-        addDrawableChild(ButtonWidget.builder(Text.literal("Auction Notes"), button ->
-                this.client.setScreen(new UtilityScreen(UtilityScreen.Mode.AUCTION)))
+        addDrawableChild(ButtonWidget.builder(Text.literal("Auction Tracker"), button ->
+                this.client.setScreen(new AuctionTrackerScreen()))
                 .dimensions(left + 20, top, PANEL_WIDTH - 40, 20).build());
 
         addDrawableChild(ButtonWidget.builder(Text.literal("PayGuard Checklist"), button ->
