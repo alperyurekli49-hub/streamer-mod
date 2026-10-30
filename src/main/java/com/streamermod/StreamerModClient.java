@@ -9,8 +9,6 @@ import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 public class StreamerModClient implements ClientModInitializer {
     private static KeyBinding openMenuKey;
@@ -32,51 +30,47 @@ public class StreamerModClient implements ClientModInitializer {
     private static KeyBinding createMenuKeyBinding() {
         try {
             // Minecraft 1.21.1–1.21.8 uses a String category.
-            Constructor<KeyBinding> legacy = KeyBinding.class.getConstructor(
-                    String.class, InputUtil.Type.class, int.class, String.class
-            );
-            return legacy.newInstance(
-                    "key.streamermod.open_menu",
-                    InputUtil.Type.KEYSYM,
-                    GLFW.GLFW_KEY_RIGHT_SHIFT,
-                    "category.streamermod.general"
-            );
-        } catch (NoSuchMethodException ignored) {
-            // Newer versions use a category object. Discover its type from
-            // the constructor instead of hard-coding a class name that can
-            // differ between Minecraft mappings/versions.
             try {
+                Constructor<KeyBinding> legacy = KeyBinding.class.getConstructor(
+                        String.class, InputUtil.Type.class, int.class, String.class
+                );
+                return legacy.newInstance(
+                        "key.streamermod.open_menu",
+                        InputUtil.Type.KEYSYM,
+                        GLFW.GLFW_KEY_RIGHT_SHIFT,
+                        "category.streamermod.general"
+                );
+            } catch (NoSuchMethodException ignored) {
+                // Newer Minecraft versions use KeyBinding.Category. Depending
+                // on the game version, the constructor has either four or
+                // five parameters. Build the category through its public
+                // Identifier constructor so this also works after remapping.
                 for (Constructor<?> candidate : KeyBinding.class.getConstructors()) {
-                    Class<?>[] parameters = candidate.getParameterTypes();
-                    if (parameters.length != 4
-                            || parameters[0] != String.class
-                            || parameters[1] != InputUtil.Type.class
-                            || parameters[2] != int.class
-                            || parameters[3] == String.class) {
+                    Class<?>[] p = candidate.getParameterTypes();
+                    if ((p.length != 4 && p.length != 5)
+                            || p[0] != String.class
+                            || p[1] != InputUtil.Type.class
+                            || p[2] != int.class
+                            || p[3] == String.class
+                            || (p.length == 5 && p[4] != int.class)) {
                         continue;
                     }
 
-                    Class<?> categoryClass = parameters[3];
-                    for (Method factory : categoryClass.getMethods()) {
-                        if (factory.getName().equals("create")
-                                && Modifier.isStatic(factory.getModifiers())
-                                && factory.getParameterCount() == 1
-                                && factory.getParameterTypes()[0] == Identifier.class) {
-                            Object category = factory.invoke(
-                                    null, Identifier.of("streamermod", "general")
-                            );
-                            return (KeyBinding) candidate.newInstance(
-                                    "key.streamermod.open_menu",
-                                    InputUtil.Type.KEYSYM,
-                                    GLFW.GLFW_KEY_RIGHT_SHIFT,
-                                    category
-                            );
-                        }
-                    }
+                    Constructor<?> categoryConstructor =
+                            p[3].getConstructor(Identifier.class);
+                    Object category = categoryConstructor.newInstance(
+                            Identifier.of("streamermod", "general")
+                    );
+
+                    Object[] args = p.length == 4
+                            ? new Object[]{"key.streamermod.open_menu", InputUtil.Type.KEYSYM,
+                                    GLFW.GLFW_KEY_RIGHT_SHIFT, category}
+                            : new Object[]{"key.streamermod.open_menu", InputUtil.Type.KEYSYM,
+                                    GLFW.GLFW_KEY_RIGHT_SHIFT, category, 0};
+
+                    return (KeyBinding) candidate.newInstance(args);
                 }
-                throw new NoSuchMethodException("No compatible KeyBinding constructor/category factory found");
-            } catch (ReflectiveOperationException e) {
-                throw new IllegalStateException("Could not register Streamer Mod keybind", e);
+                throw new NoSuchMethodException("No compatible KeyBinding constructor found");
             }
         } catch (ReflectiveOperationException e) {
             throw new IllegalStateException("Could not register Streamer Mod keybind", e);
