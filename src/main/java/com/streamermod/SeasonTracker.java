@@ -35,7 +35,6 @@ public final class SeasonTracker {
     public static void initialize() {
         load();
         ClientReceiveMessageEvents.GAME.register((message, overlayMessage) -> track(message.getString()));
-        ClientReceiveMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> track(message.getString()));
         HudRenderCallback.EVENT.register((context, tickCounter) -> {
             if (active && overlay) renderHud(context);
         });
