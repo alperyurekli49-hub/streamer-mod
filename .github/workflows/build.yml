@@ -9,6 +9,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - minecraft_version: "1.21.1"
+            yarn_mappings: "1.21.1+build.3"
+            loader_version: "0.16.5"
+            fabric_version: "0.102.1+1.21.1"
+          - minecraft_version: "1.21.8"
+            yarn_mappings: "1.21.8+build.1"
+            loader_version: "0.16.14"
+            fabric_version: "0.134.0+1.21.8"
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -20,12 +32,17 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 8.10.2
+          gradle-version: 8.14.3
       - name: Build mod
-        run: gradle build
+        run: >-
+          gradle build
+          -Pminecraft_version=${{ matrix.minecraft_version }}
+          -Pyarn_mappings=${{ matrix.yarn_mappings }}
+          -Ploader_version=${{ matrix.loader_version }}
+          -Pfabric_version=${{ matrix.fabric_version }}
       - name: Upload mod JAR
         uses: actions/upload-artifact@v4
         with:
-          name: streamer-mod-1.21.1
+          name: streamer-mod-${{ matrix.minecraft_version }}
           path: build/libs/*.jar
           if-no-files-found: error
