@@ -15,7 +15,7 @@ public class StreamerMenuScreen extends Screen {
     @Override
     protected void init() {
         int left = (this.width - PANEL_WIDTH) / 2;
-        int top = this.height / 2 - 54;
+        int top = this.height / 2 - 68;
 
         addDrawableChild(ButtonWidget.builder(Text.literal("Auction Notes"), button ->
                 this.client.setScreen(new UtilityScreen(UtilityScreen.Mode.AUCTION)))
@@ -23,24 +23,28 @@ public class StreamerMenuScreen extends Screen {
 
         addDrawableChild(ButtonWidget.builder(Text.literal("PayGuard Checklist"), button ->
                 this.client.setScreen(new UtilityScreen(UtilityScreen.Mode.PAYGUARD)))
-                .dimensions(left + 20, top + 28, PANEL_WIDTH - 40, 20).build());
+                .dimensions(left + 20, top + 25, PANEL_WIDTH - 40, 20).build());
 
         addDrawableChild(ButtonWidget.builder(Text.literal("Countdown"), button ->
                 this.client.setScreen(new UtilityScreen(UtilityScreen.Mode.COUNTDOWN)))
-                .dimensions(left + 20, top + 56, PANEL_WIDTH - 40, 20).build());
+                .dimensions(left + 20, top + 50, PANEL_WIDTH - 40, 20).build());
+
+        addDrawableChild(ButtonWidget.builder(Text.literal("Season Tracker"), button ->
+                this.client.setScreen(new SeasonTrackerScreen()))
+                .dimensions(left + 20, top + 75, PANEL_WIDTH - 40, 20).build());
 
         addDrawableChild(ButtonWidget.builder(Text.literal("Close"), button -> this.close())
-                .dimensions(left + 20, top + 92, PANEL_WIDTH - 40, 20).build());
+                .dimensions(left + 20, top + 105, PANEL_WIDTH - 40, 20).build());
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         renderBackground(context, mouseX, mouseY, delta);
         int left = (this.width - PANEL_WIDTH) / 2;
-        int top = this.height / 2 - 92;
-        context.fill(left, top, left + PANEL_WIDTH, top + 174, 0xE619202B);
-        context.drawCenteredTextWithShadow(textRenderer, "STREAMER MOD", this.width / 2, top + 14, 0xFF66D9EF);
-        context.drawCenteredTextWithShadow(textRenderer, "Creator utility menu", this.width / 2, top + 29, 0xFFB8C5D1);
+        int top = this.height / 2 - 100;
+        context.fill(left, top, left + PANEL_WIDTH, top + 190, 0xE619202B);
+        context.drawCenteredTextWithShadow(textRenderer, "STREAMER MOD", this.width / 2, top + 12, 0xFFB88CFF);
+        context.drawCenteredTextWithShadow(textRenderer, "Creator utility menu", this.width / 2, top + 27, 0xFFB8C5D1);
         super.render(context, mouseX, mouseY, delta);
     }
 }
