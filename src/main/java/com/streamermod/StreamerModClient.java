@@ -12,6 +12,7 @@ public class StreamerModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        SeasonTracker.initialize();
         openMenuKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.streamermod.open_menu",
                 InputUtil.Type.KEYSYM,
